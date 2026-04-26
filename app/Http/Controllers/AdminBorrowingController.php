@@ -18,28 +18,27 @@ class AdminBorrowingController extends Controller
 
     // RETURN BUKU + DENDA
     public function return($id)
-    {
-        $borrowing = Borrowing::findOrFail($id);
+{
+    $borrowing = Borrowing::findOrFail($id);
 
-        if ($borrowing->status === 'dikembalikan') {
-            return back()->with('error', 'Sudah dikembalikan');
-        }
+    if ($borrowing->status === 'dikembalikan') {
+        return back()->with('error', 'Sudah dikembalikan');
+    }
 
-        // TELAT
-        $telat = Carbon::parse($borrowing->tanggal_kembali_rencana)
-            ->diffInDays(now(), false);
+    $today   = now();
+    $dueDate = Carbon::parse($borrowing->tanggal_kembali);
+    $telat   = $dueDate->diffInDays($today, false);
+    $denda   = $telat > 0 ? $telat * 1000 : 0;
 
-        $denda = 0;
-        if ($telat > 0) {
-            $denda = $telat * 1000; // 1000/hari
-        }
+    $borrowing->update([
+        'status' => 'dikembalikan',
+        'denda'  => $denda,
+    ]);
 
-        $borrowing->update([
-            'status' => 'dikembalikan',
-            'tanggal_kembali' => now(),
-            'denda' => $denda
-        ]);
+    $borrowing->book->increment('stok');
 
+    return back()->with('success', 'Buku dikembalikan');
+}
         // KEMBALIKAN STOK
         $borrowing->book->increment('stok');
 

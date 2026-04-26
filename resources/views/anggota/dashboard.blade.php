@@ -121,7 +121,7 @@
 
     </div>
 
-    {{-- PAGINATION (WAJIB DI LUAR ROW) --}}
+    {{-- PAGINATION --}}
     <div class="mt-4 d-flex justify-content-center">
         {{ $books->onEachSide(1)->links() }}
     </div>

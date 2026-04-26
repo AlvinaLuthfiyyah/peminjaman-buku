@@ -87,8 +87,8 @@ class BorrowingController extends Controller
         return back()->with('error', 'Buku sudah dikembalikan');
     }
 
-    $today    = Carbon::today();
-    $dueDate  = Carbon::parse($borrowing->tanggal_kembali)->startOfDay();
+    $today   = Carbon::today('Asia/Jakarta');
+    $dueDate = Carbon::parse($borrowing->tanggal_kembali)->setTimezone('Asia/Jakarta')->startOfDay();
     $lateDays = $today->greaterThan($dueDate) ? $dueDate->diffInDays($today) : 0;
     $denda    = $lateDays > 0 ? $lateDays * 1000 : 0;
 

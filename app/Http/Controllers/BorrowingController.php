@@ -11,9 +11,8 @@ use Illuminate\Support\Str;
 
 class BorrowingController extends Controller
 {
-    // =========================
     // LIST DATA
-    // =========================
+
     public function index()
     {
         if (Auth::user()->role == 'admin') {
@@ -27,20 +26,15 @@ class BorrowingController extends Controller
                 ->paginate(10);
         }
 
-        // [FIX] Kalkulasi denda dilakukan on-the-fly di sini tanpa update DB.
-        // Untuk update DB otomatis, gunakan Laravel Scheduler di App\Console\Kernel.
-        // Contoh scheduler: $schedule->call(function () { ... })->daily();
-
         if (Auth::user()->role == 'admin') {
             return view('admin.borrowings.index', compact('borrowings'));
         } else {
             return view('anggota.riwayat', compact('borrowings'));
         }
     }
-
-    // =========================
+    
     // PINJAM BUKU
-    // =========================
+
     public function store(Request $request)
     {
         $request->validate([
@@ -72,16 +66,15 @@ class BorrowingController extends Controller
             'token_used'       => false,
         ]);
 
-        // [FIX] Kurangi stok setelah peminjaman dibuat
+        // Kurangi stok setelah peminjaman dibuat
         $book->decrement('stok');
 
         return redirect()->route('riwayat')
             ->with('success', 'Pengajuan peminjaman berhasil, menunggu approval admin');
     }
 
-    // =========================
     // KEMBALIKAN BUKU
-    // =========================
+
     public function kembalikan($id)
     {
         $borrowing = Borrowing::findOrFail($id);
@@ -111,12 +104,11 @@ class BorrowingController extends Controller
         return back()->with('success', 'Buku berhasil dikembalikan');
     }
 
-    // =========================
     // APPROVE PEMINJAMAN
-    // =========================
+
     public function approve($id)
     {
-        // [FIX] Hanya admin yang boleh approve
+        // APPROVE ADMIN
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Akses tidak diizinkan');
         }

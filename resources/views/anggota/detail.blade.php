@@ -52,8 +52,7 @@
                     @endif
                 </div>
             </div>
-
-            {{-- DETAIL --}}
+            
             <div class="col-md-9">
 
                 <h2 style="font-size:24px; font-weight:700; color:#0f172a; margin:0 0 8px;">

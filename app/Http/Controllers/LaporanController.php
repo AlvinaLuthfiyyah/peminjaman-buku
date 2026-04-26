@@ -20,14 +20,14 @@ class LaporanController extends Controller
 
     $query = Borrowing::with(['user', 'book']);
 
-    // ================= BULANAN =================
+    // BULANAN
     if ($tipe == 'bulanan') {
 
         $query->whereMonth('tanggal_pinjam', $bulan)
               ->whereYear('tanggal_pinjam', $tahun);
     }
 
-    // ================= MINGGUAN =================
+    // MINGGUAN
     else if ($tipe == 'mingguan') {
 
         $startOfMonth = Carbon::create($tahun, $bulan, 1);
@@ -46,14 +46,8 @@ class LaporanController extends Controller
 
     $totalPeminjaman = $data->count();
     $totalDenda = $data->sum('denda');
-
-    // ✅ PINDAHKAN KE SINI (SEBELUM RETURN)
     $totalBuku = Book::count();
-
-    // kalau role belum pasti, pakai ini dulu biar aman
     $totalAnggota = User::count();
-    // kalau sudah fix pakai siswa:
-    // $totalAnggota = User::where('role', 'siswa')->count();
 
     return view('admin.laporan.index', compact(
         'data',
@@ -78,11 +72,9 @@ class LaporanController extends Controller
     $bulan  = (int) ($request->bulan ?? now()->month);
     $tahun  = (int) ($request->tahun ?? now()->year);
     $minggu = (int) ($request->minggu ?? 1);
-
-    // ✅ WAJIB ADA (INI YANG KURANG)
     $query = Borrowing::with(['user', 'book']);
 
-    // ================= FILTER + PERIODE =================
+    // FILTER + PERIODE
     if ($tipe == 'bulanan') {
 
         $query->whereMonth('tanggal_pinjam', $bulan)
@@ -108,13 +100,13 @@ class LaporanController extends Controller
 
     $data = $query->get();
 
-    // ================= SUMMARY =================
+    // SUMMARY 
     $totalPeminjaman = $data->count();
     $totalDenda      = $data->sum('denda');
     $totalBuku       = Book::count();
     $totalAnggota    = User::where('role', 'anggota')->count();
 
-    // ================= PDF =================
+    // PDF
     $pdf = Pdf::loadView('admin.laporan.pdf', [
         'data' => $data,
         'periode' => $periode,

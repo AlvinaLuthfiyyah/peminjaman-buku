@@ -16,7 +16,7 @@ class AdminBorrowingController extends Controller
         return view('admin.borrowings.index', compact('borrowings'));
     }
 
-    // ✅ RETURN BUKU + DENDA
+    // RETURN BUKU + DENDA
     public function return($id)
     {
         $borrowing = Borrowing::findOrFail($id);
@@ -25,7 +25,7 @@ class AdminBorrowingController extends Controller
             return back()->with('error', 'Sudah dikembalikan');
         }
 
-        // 🔥 HITUNG TELAT (POSITIF = TELAT)
+        // TELAT
         $telat = Carbon::parse($borrowing->tanggal_kembali_rencana)
             ->diffInDays(now(), false);
 
@@ -40,13 +40,13 @@ class AdminBorrowingController extends Controller
             'denda' => $denda
         ]);
 
-        // 🔥 KEMBALIKAN STOK
+        // KEMBALIKAN STOK
         $borrowing->book->increment('stok');
 
         return back()->with('success', 'Buku dikembalikan');
     }
 
-    // ✅ APPROVE (BUAT TOKEN DOANG)
+    // APPROVE TOKEN
     public function approve($id)
     {
         $borrowing = Borrowing::findOrFail($id);
@@ -68,7 +68,7 @@ class AdminBorrowingController extends Controller
         return back()->with('success', 'Disetujui + token dibuat');
     }
 
-    // ✅ VALIDASI TOKEN = BUKU RESMI DIPINJAM
+    // VALIDASI TOKEN 
     public function validasiToken(Request $request)
     {
         $request->validate([
@@ -89,13 +89,12 @@ class AdminBorrowingController extends Controller
             return back()->with('error', 'Token sudah expired');
         }
 
-        // 🔥 FINAL STEP
         $borrowing->update([
             'token_used' => true,
             'status' => 'dipinjam'
         ]);
 
-        // 🔥 STOK BARU DIKURANGI DI SINI
+        // STOK DIKURANGI
         $borrowing->book->decrement('stok');
 
         return back()->with('success', 'Token valid, buku sudah dipinjam');

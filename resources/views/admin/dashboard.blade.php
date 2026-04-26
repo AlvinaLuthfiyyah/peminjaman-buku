@@ -76,7 +76,7 @@
                 <div class="col-md-6 col-xl-4">
                     <div class="card h-100 border-0" style="background:#ffffff; border-radius:12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: 12px;">
                         <div class="d-flex gap-3 align-items-center">
-                            <img src="{{ $book->cover ? 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/covers/' . $item->book->cover : 'https://ui-avatars.com/api/?name='.urlencode(substr($book->judul,0,2)).'&background=random&color=fff&size=80' }}" 
+                            <img src="{{ $book->cover ? 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/covers/' . $book->cover : 'https://ui-avatars.com/api/?name='.urlencode(substr($book->judul,0,2)).'&background=random&color=fff&size=80' }}" 
                                  style="width: 55px; height: 80px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.06); flex-shrink:0;">
                             
                             <div style="overflow: hidden; width: 100%;">

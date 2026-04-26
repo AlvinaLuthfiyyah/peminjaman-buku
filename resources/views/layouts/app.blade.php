@@ -584,9 +584,14 @@
     {{-- BOTTOM --}}
     <div class="sidebar-bottom">
         <div class="user-info">
-            <div class="user-avatar">
-                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-            </div>
+            <div class="user-avatar" style="padding:0; overflow:hidden;">
+    @if(auth()->user()->photo)
+        <img src="{{ 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/profiles/' . auth()->user()->photo }}"
+             style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+    @else
+        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+    @endif
+</div>
             <div style="overflow:hidden;">
                 <div class="user-name">{{ auth()->user()->name }}</div>
                 <div class="user-role">{{ ucfirst(auth()->user()->role) }}</div>

@@ -154,7 +154,7 @@
         </form>
     @elseif($item->status == 'approved')
         <span style="color:#2563eb; font-size:13px; font-weight:500;">
-            <i class="bi bi-hourglass-split me-1"></i>Menunggu Ambil
+            <i class="bi bi-hourglass-split me-1"></i>Menunggu Diambil
         </span>
     @elseif($item->status == 'dipinjam')
         <form action="{{ route('admin.return', $item->id) }}" method="POST">

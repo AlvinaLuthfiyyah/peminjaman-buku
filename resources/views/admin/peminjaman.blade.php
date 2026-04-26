@@ -122,15 +122,17 @@
 </td>
 
                         {{-- STATUS --}}
-                        <td>
-                            @if($item->status == 'menunggu')
-                                <span class="badge bg-warning text-dark">Menunggu</span>
-                            @elseif($item->status == 'dipinjam')
-                                <span class="badge bg-primary">Dipinjam</span>
-                            @else
-                                <span class="badge bg-success">Dikembalikan</span>
-                            @endif
-                        </td>
+<td>
+    @if($item->status == 'menunggu')
+        <span class="badge bg-warning text-dark">Menunggu</span>
+    @elseif($item->status == 'approved')
+        <span class="badge bg-info text-dark">Disetujui</span>
+    @elseif($item->status == 'dipinjam')
+        <span class="badge bg-primary">Dipinjam</span>
+    @else
+        <span class="badge bg-success">Dikembalikan</span>
+    @endif
+</td>
 
                         {{-- DENDA --}}
                         <td>
@@ -144,32 +146,25 @@
 </td>
 
                         {{-- AKSI --}}
-                        <td>
-
-                            {{-- APPROVE --}}
-                            @if($item->status == 'menunggu')
-                                <form action="{{ route('admin.approve', $item->id) }}" method="POST">
-                                    @csrf
-                                    <button class="btn btn-sm btn-success">
-                                        Approve
-                                    </button>
-                                </form>
-
-                            {{-- RETURN --}}
-                            @elseif($item->status == 'dipinjam')
-                                <form action="{{ route('admin.return', $item->id) }}" method="POST">
-                                    @csrf
-                                    <button class="btn btn-sm btn-primary">
-                                        Kembalikan
-                                    </button>
-                                </form>
-
-                            @else
-                                <span class="text-muted">Selesai</span>
-                            @endif
-
-                        </td>
-
+<td>
+    @if($item->status == 'menunggu')
+        <form action="{{ route('admin.approve', $item->id) }}" method="POST">
+            @csrf
+            <button class="btn btn-sm btn-success">Approve</button>
+        </form>
+    @elseif($item->status == 'approved')
+        <span style="color:#2563eb; font-size:13px; font-weight:500;">
+            <i class="bi bi-hourglass-split me-1"></i>Menunggu Ambil
+        </span>
+    @elseif($item->status == 'dipinjam')
+        <form action="{{ route('admin.return', $item->id) }}" method="POST">
+            @csrf
+            <button class="btn btn-sm btn-primary">Kembalikan</button>
+        </form>
+    @else
+        <span class="text-muted">Selesai</span>
+    @endif
+</td>
                     </tr>
 
                     @empty

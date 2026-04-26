@@ -86,7 +86,7 @@
                         <td>
 
                         {{-- TOKEN --}}
-                    @if($item->token && !$item->token_used)
+                    @if($item->token && !$item->token_used && $item->status == 'approved')
                 <div>
                     <span class="badge bg-warning text-dark">
                         Token: <strong>{{ $item->token }}</strong>

@@ -68,39 +68,57 @@
                             @endif
                         </td>
                         <td>
-                            @if($b->status == 'dipinjam')
-                                <span class="badge" style="background:#fefce8; color:#ca8a04;">
-                                    <i class="bi bi-arrow-up-circle me-1"></i>Dipinjam
-                                </span>
-                            @else
-                                <span class="badge" style="background:#ecfdf5; color:#065f46;">
-                                    <i class="bi bi-check-circle me-1"></i>Dikembalikan
-                                </span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($b->denda > 0)
-                                <span style="font-weight:700; color:#ef4444;">
-                                    Rp {{ number_format($b->denda) }}
-                                </span>
-                            @else
-                                <span style="color:#10b981; font-weight:500;">Gratis</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($b->status == 'dipinjam')
-                                <form action="{{ route('admin.return', $b->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success btn-sm"
-                                            onclick="return confirm('Konfirmasi pengembalian buku ini?')"
-                                            style="border-radius:6px; font-size:12px; font-weight:600; padding:5px 12px;">
-                                        <i class="bi bi-arrow-return-left me-1"></i>Kembalikan
-                                    </button>
-                                </form>
-                            @else
-                                <span style="color:#94a3b8; font-size:13px;">Selesai</span>
-                            @endif
-                        </td>
+    @if($b->status == 'menunggu')
+        <span class="badge" style="background:#fef9c3; color:#854d0e;">
+            <i class="bi bi-hourglass me-1"></i>Menunggu
+        </span>
+    @elseif($b->status == 'approved')
+        <span class="badge" style="background:#eff6ff; color:#1d4ed8;">
+            <i class="bi bi-check2-circle me-1"></i>Disetujui
+        </span>
+    @elseif($b->status == 'dipinjam')
+        <span class="badge" style="background:#fefce8; color:#ca8a04;">
+            <i class="bi bi-arrow-up-circle me-1"></i>Dipinjam
+        </span>
+    @else
+        <span class="badge" style="background:#ecfdf5; color:#065f46;">
+            <i class="bi bi-check-circle me-1"></i>Dikembalikan
+        </span>
+    @endif
+</td>
+<td>
+    @if($b->denda > 0)
+        <span style="font-weight:700; color:#ef4444;">Rp {{ number_format($b->denda) }}</span>
+    @else
+        <span style="color:#10b981; font-weight:500;">Gratis</span>
+    @endif
+</td>
+<td>
+    @if($b->status == 'menunggu')
+        <form action="{{ route('admin.approve', $b->id) }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-warning btn-sm"
+                    style="border-radius:6px; font-size:12px; font-weight:600; padding:5px 12px;">
+                <i class="bi bi-check2-circle me-1"></i>Approve
+            </button>
+        </form>
+    @elseif($b->status == 'approved')
+        <span style="color:#2563eb; font-size:13px; font-weight:500;">
+            <i class="bi bi-hourglass-split me-1"></i>Menunggu Ambil
+        </span>
+    @elseif($b->status == 'dipinjam')
+        <form action="{{ route('admin.return', $b->id) }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-success btn-sm"
+                    onclick="return confirm('Konfirmasi pengembalian buku ini?')"
+                    style="border-radius:6px; font-size:12px; font-weight:600; padding:5px 12px;">
+                <i class="bi bi-arrow-return-left me-1"></i>Kembalikan
+            </button>
+        </form>
+    @else
+        <span style="color:#94a3b8; font-size:13px;">Selesai</span>
+    @endif
+</td>
                     </tr>
                     @empty
                     <tr>

@@ -39,11 +39,6 @@ class AdminBorrowingController extends Controller
 
     return back()->with('success', 'Buku dikembalikan');
 }
-        // KEMBALIKAN STOK
-        $borrowing->book->increment('stok');
-
-        return back()->with('success', 'Buku dikembalikan');
-    }
 
     // APPROVE TOKEN
     public function approve($id)

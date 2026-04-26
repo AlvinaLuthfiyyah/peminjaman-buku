@@ -78,30 +78,32 @@ class BookController extends Controller
     }
 
     // EDIT
-  public function update(Request $request, Book $book)
-{
-    $validated = $request->validate([
-        'judul'     => 'required',
-        'penulis'   => 'required',
-        'genre'     => 'required',
-        'penerbit'  => 'nullable',
-        'deskripsi' => 'nullable',
-        'stok'      => 'required|integer',
-        'cover'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
-    ]);
+   public function update(Request $request, Book $book)
+    {
+        $validated = $request->validate([
+            'judul'     => 'required',
+            'penulis'   => 'required',
+            'genre'     => 'required',
+            'penerbit'  => 'nullable',
+            'deskripsi' => 'nullable',
+            'stok'      => 'required|integer',
+            'cover'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+        ]);
 
-  if ($request->hasFile('cover')) {
-    if ($book->cover) {
-        try { Storage::disk('s3')->delete($book->cover); } catch (\Exception $e) {}
+        if ($request->hasFile('cover')) {
+            if ($book->cover) {
+                try { Storage::disk('s3')->delete($book->cover); } catch (\Exception $e) {}
+            }
+            $validated['cover'] = $request->file('cover')->store('covers', 's3');
+        } else {
+            unset($validated['cover']);
+        }
+
+        $book->update($validated);
+
+        return redirect()->route('books.index')
+            ->with('success', 'Buku berhasil diupdate');
     }
-    $validated['cover'] = $request->file('cover')->store('covers', 's3');
-
-    $book->update($validated);
-
-    return redirect()->route('books.index')
-        ->with('success', 'Buku berhasil diupdate');
-}
-
     // DELETE + HAPUS COVER
     
     public function destroy(Book $book)

@@ -65,9 +65,9 @@ class BookController extends Controller
             'cover'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        // ✅ Upload ke Cloudflare R2
+        // ✅ Upload ke Laravel Cloud Object Storage (S3)
         if ($request->hasFile('cover')) {
-            $validated['cover'] = $request->file('cover')->store('covers', 'r2');
+            $validated['cover'] = $request->file('cover')->store('covers', 's3');
         }
 
         Book::create($validated);
@@ -103,13 +103,13 @@ class BookController extends Controller
 
         if ($request->hasFile('cover')) {
 
-            // ✅ Hapus cover lama dari R2
-            if ($book->cover && Storage::disk('r2')->exists($book->cover)) {
-                Storage::disk('r2')->delete($book->cover);
+            // ✅ Hapus cover lama dari S3
+            if ($book->cover && Storage::disk('s3')->exists($book->cover)) {
+                Storage::disk('s3')->delete($book->cover);
             }
 
-            // ✅ Simpan cover baru ke R2
-            $validated['cover'] = $request->file('cover')->store('covers', 'r2');
+            // ✅ Simpan cover baru ke S3
+            $validated['cover'] = $request->file('cover')->store('covers', 's3');
 
         } else {
             unset($validated['cover']);
@@ -127,9 +127,9 @@ class BookController extends Controller
     // ==========================
     public function destroy(Book $book)
     {
-        // ✅ Hapus cover dari R2
-        if ($book->cover && Storage::disk('r2')->exists($book->cover)) {
-            Storage::disk('r2')->delete($book->cover);
+        // ✅ Hapus cover dari S3
+        if ($book->cover && Storage::disk('s3')->exists($book->cover)) {
+            Storage::disk('s3')->delete($book->cover);
         }
 
         $book->delete();

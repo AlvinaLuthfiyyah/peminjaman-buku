@@ -64,10 +64,7 @@ class BookController extends Controller
             'stok'     => 'required|integer',
             'cover'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
-\Log::info('Attempting upload', [
-    'disk' => config('filesystems.disks.s3'),
-    'has_file' => $request->hasFile('cover'),
-]);
+
         // Upload (S3)
         if ($request->hasFile('cover')) {
             $validated['cover'] = $request->file('cover')->store('covers', 's3');

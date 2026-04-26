@@ -31,7 +31,7 @@
             {{-- COVER --}}
             <div class="col-md-3 text-center">
                 @if($book->cover)
-                    <img src="{{ Storage::disk('s3')->url($book->cover) }}"
+                    <img src="{{ 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/covers/' . $book->cover }}"
                          style="width:100%; max-width:180px; height:auto; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12); object-fit:cover;">
                 @else
                     <div style="width:100%; max-width:180px; height:260px; background:linear-gradient(135deg,#e0e7ff,#ddd6fe); border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto;">

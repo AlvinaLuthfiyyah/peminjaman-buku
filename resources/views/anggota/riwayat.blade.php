@@ -30,7 +30,7 @@
                         <td class="d-flex align-items-center gap-3">
 
                             @if($item->book && $item->book->cover)
-                                <img src="{{ Storage::disk('s3')->url($book->cover) }}"
+                                <img src="{{ 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/covers/' . $book->cover }}"
                                      width="50" height="70"
                                      style="object-fit:cover; border-radius:6px;">
                             @else

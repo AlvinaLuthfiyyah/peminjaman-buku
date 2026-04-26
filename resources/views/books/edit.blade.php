@@ -127,7 +127,7 @@
                     </div>
 
                     <div class="row">
-                        {{-- ✅ COVER SAAT INI dari R2 --}}
+                        {{--COVER SAAT INI dari R2 --}}
                         @if($book->cover)
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">
@@ -135,7 +135,7 @@
                                     Cover Saat Ini
                                 </label>
                                 <div>
-                                    <img src="{{ Storage::disk('r2')->url($book->cover) }}"
+                                   <img src="{{ Storage::url($book->cover) }}"
                                          style="max-width:140px; max-height:200px; object-fit:cover; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
                                 </div>
                             </div>

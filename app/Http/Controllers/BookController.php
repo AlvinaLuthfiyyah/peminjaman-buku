@@ -67,7 +67,7 @@ class BookController extends Controller
 
         // ✅ Upload ke Laravel Cloud Object Storage (S3)
         if ($request->hasFile('cover')) {
-            $validated['cover'] = $request->file('cover')->store('covers', 's3');
+            $validated['cover'] = $request->file('cover')->store('covers', 'r2');
         }
 
         Book::create($validated);
@@ -104,12 +104,12 @@ class BookController extends Controller
         if ($request->hasFile('cover')) {
 
             // ✅ Hapus cover lama dari S3
-            if ($book->cover && Storage::disk('s3')->exists($book->cover)) {
+            if ($book->cover && Storage::disk('r2')->exists($book->cover)) {
                 Storage::disk('s3')->delete($book->cover);
             }
 
             // ✅ Simpan cover baru ke S3
-            $validated['cover'] = $request->file('cover')->store('covers', 's3');
+            $validated['cover'] = $request->file('cover')->store('covers', 'r2');
 
         } else {
             unset($validated['cover']);

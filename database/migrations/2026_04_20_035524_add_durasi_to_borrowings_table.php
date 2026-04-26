@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('borrowings', function (Blueprint $table) {
-            $table->integer('durasi')->after('tanggal_kembali');
+            if (!Schema::hasColumn('borrowings', 'durasi')) {
+                $table->integer('durasi')->after('tanggal_kembali');
+            }
         });
     }
 

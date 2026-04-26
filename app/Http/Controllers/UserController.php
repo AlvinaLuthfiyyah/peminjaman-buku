@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // ✅ LIST ANGGOTA
+    // LIST ANGGOTA
     public function index(Request $request)
 {
     $search = $request->search;
@@ -27,13 +27,13 @@ class UserController extends Controller
     return view('admin.anggota.index', compact('users', 'search'));
 }
 
-    // ✅ FORM TAMBAH
+    // FORM TAMBAH
     public function create()
     {
         return view('admin.anggota.create');
     }
 
-    // ✅ SIMPAN
+    // SIMPAN
     public function store(Request $request)
     {
         $request->validate([
@@ -64,7 +64,7 @@ class UserController extends Controller
             ->with('success', 'Anggota berhasil ditambahkan!');
     }
 
-    // ✅ HAPUS
+    // HAPUS
     public function destroy($id)
     {
         User::findOrFail($id)->delete();

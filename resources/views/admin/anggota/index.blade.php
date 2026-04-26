@@ -33,7 +33,7 @@
 @endif
 
 <div class="card mt-3">
-    <div class="card-body">
+    <div class="card-body" style="overflow-x: auto;">
         <table class="table table-hover">
             <thead>
                 <tr>

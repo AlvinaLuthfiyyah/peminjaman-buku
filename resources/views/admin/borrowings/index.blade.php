@@ -25,6 +25,20 @@
             <strong>Semua Data Peminjaman</strong>
         </div>
 
+        {{-- NOTIFIKASI --}}
+@if(session('error'))
+    <div style="margin:12px 20px 0; padding:10px 14px; background:#FEE2E2; border:1px solid #FECACA; border-radius:8px; color:#991B1B; font-size:13px;">
+        ⚠️ {{ session('error') }}
+    </div>
+@endif
+
+@if(session('success'))
+    <div style="margin:12px 20px 0; padding:10px 14px; background:#DCFCE7; border:1px solid #BBF7D0; border-radius:8px; color:#166534; font-size:13px;">
+        ✅ {{ session('success') }}
+    </div>
+@endif
+
+
         {{-- VALIDASI TOKEN --}}
         <form action="{{ route('admin.validasi.token') }}" method="POST" style="padding:20px;">
             @csrf

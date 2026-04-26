@@ -16,6 +16,12 @@
         {{ session('success') }}
     </div>
 @endif
+@if(session('error'))
+    <div class="alert alert-danger mb-4">
+        <i class="bi bi-x-circle-fill me-2"></i>
+        {{ session('error') }}
+    </div>
+@endif
 
 <div class="card">
     <div class="card-body" style="padding:0;">

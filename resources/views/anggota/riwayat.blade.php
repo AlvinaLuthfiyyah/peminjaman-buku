@@ -114,23 +114,23 @@
                             @endif
                         </td>
 
-                        {{-- AKSI --}}
-                        <td>
-                            @if($item->status == 'dipinjam')
-                                <form action="{{ route('anggota.kembalikan', $item->id) }}" method="POST">
-    @csrf
-    <button type="submit" class="btn btn-success">
-        Kembalikan
-    </button>
-</form>
-
-                            @elseif($item->status == 'menunggu')
-                                <span class="text-muted">Menunggu approval</span>
-
-                            @else
-                                <span class="text-muted">Selesai</span>
-                            @endif
-                        </td>
+                       {{-- AKSI --}}
+<td>
+    @if($item->status == 'approved')
+        <span class="badge bg-info text-dark">
+            <i class="bi bi-bag-check me-1"></i>Dapat Diambil
+        </span>
+    @elseif($item->status == 'dipinjam')
+        <form action="{{ route('anggota.kembalikan', $item->id) }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-success">Kembalikan</button>
+        </form>
+    @elseif($item->status == 'menunggu')
+        <span class="text-muted">Menunggu approval</span>
+    @else
+        <span class="text-muted">Selesai</span>
+    @endif
+</td>
 
                     </tr>
                     @empty

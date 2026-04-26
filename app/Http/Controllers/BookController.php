@@ -67,7 +67,7 @@ class BookController extends Controller
 
         // Upload (S3)
         if ($request->hasFile('cover')) {
-            $validated['cover'] = $request->file('cover')->store('covers', 'public');
+            $validated['cover'] = $request->file('cover')->store('covers', 's3');
         }
 
         Book::create($validated);
@@ -91,7 +91,7 @@ class BookController extends Controller
     ]);
 
     if ($request->hasFile('cover')) {
-        // [FIX] Konsisten pakai 'public'
+        // [FIX] Konsisten pakai 's3'
         if ($book->cover && Storage::disk('public')->exists($book->cover)) {
             Storage::disk('public')->delete($book->cover);
         }
@@ -111,7 +111,7 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         // ✅ Hapus cover dari S3
-        if ($book->cover && Storage::disk('public')->exists($book->cover)) {
+        if ($book->cover && Storage::disk('s3')->exists($book->cover)) {
             Storage::disk('s3')->delete($book->cover);
         }
 

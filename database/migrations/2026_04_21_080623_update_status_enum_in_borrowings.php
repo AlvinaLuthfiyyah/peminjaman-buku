@@ -6,30 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('borrowings', function (Blueprint $table) {
-             DB::statement("
-        ALTER TABLE borrowings 
-        MODIFY status ENUM('menunggu','dipinjam','dikembalikan') 
-        DEFAULT 'menunggu'
-    ");
+            $table->string('status')->default('menunggu')->change();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('borrowings', function (Blueprint $table) {
-             DB::statement("
-        ALTER TABLE borrowings 
-        MODIFY status ENUM('dipinjam','dikembalikan')
-    ");
+            $table->string('status')->default('dipinjam')->change();
         });
     }
 };

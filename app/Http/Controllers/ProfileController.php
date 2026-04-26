@@ -57,17 +57,15 @@ class ProfileController extends Controller
 
     // Upload foto
     if ($request->hasFile('photo')) {
-
-        // hapus foto lama
-        if ($user->photo) {
-            Storage::delete('public/' . $user->photo);
-        }
-
-        // simpan foto baru
-        $path = $request->file('photo')->store('profile', 'public');
-        $user->photo = $path;
+    // [FIX] Hapus foto lama
+    if ($user->photo) {
+        Storage::disk('public')->delete($user->photo);
     }
-
+    // Simpan foto baru
+    $path = $request->file('photo')->store('profile', 'public');
+    $user->photo = $path;
+}
+Coba upload foto profil lagi setelah commit — harusnya sudah tampil!
     $user->save();
 
     return Redirect::route('profile.edit')

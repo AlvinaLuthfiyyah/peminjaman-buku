@@ -76,33 +76,32 @@ class BorrowingController extends Controller
     // KEMBALIKAN BUKU
 
     public function kembalikan($id)
-    {
-        $borrowing = Borrowing::findOrFail($id);
+{
+    $borrowing = Borrowing::findOrFail($id);
 
-        // [FIX] Pastikan hanya pemilik yang bisa kembalikan
-        if ($borrowing->user_id !== Auth::id()) {
-            abort(403, 'Akses tidak diizinkan');
-        }
-
-        if ($borrowing->status == 'dikembalikan') {
-            return back()->with('error', 'Buku sudah dikembalikan');
-        }
-
-        $today    = now();
-        $dueDate  = Carbon::parse($borrowing->tanggal_kembali);
-        $lateDays = $dueDate->diffInDays($today, false);
-        $denda    = $lateDays > 0 ? $lateDays * 1000 : 0;
-
-        // Kembalikan stok
-        $borrowing->book->increment('stok');
-
-        $borrowing->update([
-            'status' => 'dikembalikan',
-            'denda'  => $denda,
-        ]);
-
-        return back()->with('success', 'Buku berhasil dikembalikan');
+    if ($borrowing->user_id !== Auth::id()) {
+        abort(403, 'Akses tidak diizinkan');
     }
+
+    if ($borrowing->status == 'dikembalikan') {
+        return back()->with('error', 'Buku sudah dikembalikan');
+    }
+
+    $today    = Carbon::today();
+    $dueDate  = Carbon::parse($borrowing->tanggal_kembali)->startOfDay();
+    $lateDays = $today->greaterThan($dueDate) ? $dueDate->diffInDays($today) : 0;
+    $denda    = $lateDays > 0 ? $lateDays * 1000 : 0;
+
+    $borrowing->book->increment('stok');
+
+    $borrowing->update([
+        'status'               => 'dikembalikan',
+        'denda'                => $denda,
+        'tanggal_pengembalian' => now(),
+    ]);
+
+    return back()->with('success', 'Buku berhasil dikembalikan');
+}
 
     // APPROVE PEMINJAMAN
 

@@ -80,11 +80,14 @@
 
             {{-- Cover Image --}}
             <div style="position: relative; width: 100%; padding-top: 115%;">
-                  <img src="{{ Storage::disk('s3')->url($book->cover) }}"  
-                        : 'https://ui-avatars.com/api/?name='.urlencode(substr($book->judul,0,2)).'&background=random&color=fff&size=300' }}" 
-                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
-            </div>
-            
+    @if($book->cover)
+        <img src="{{ Storage::disk('s3')->url($book->cover) }}"
+             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+    @else
+        <img src="{{ 'https://ui-avatars.com/api/?name='.urlencode(substr($book->judul,0,2)).'&background=random&color=fff&size=300' }}"
+             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+    @endif
+</div>
             {{-- Card Body --}}
             <div class="card-body p-2 d-flex flex-column">
                 <h6 style="font-weight: 700; color: #1e293b; font-size: 14px; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;">

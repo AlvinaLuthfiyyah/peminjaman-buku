@@ -91,8 +91,7 @@ class BookController extends Controller
     ]);
 
     if ($request->hasFile('cover')) {
-        // [FIX] Konsisten pakai 's3'
-        if ($book->cover && Storage::disk('public')->exists($book->cover)) {
+        if ($book->cover && Storage::disk('s3')->exists($book->cover)) {
             Storage::disk('public')->delete($book->cover);
         }
         $validated['cover'] = $request->file('cover')->store('covers', 'public');

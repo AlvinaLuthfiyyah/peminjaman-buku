@@ -9,9 +9,8 @@ use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
-    // ==========================
-    // 📚 DASHBOARD SISWA + SEARCH
-    // ==========================
+    // DASHBOARD SISWA + SEARCH
+    
     public function dashboard(Request $request)
     {
         $search = $request->search;
@@ -24,10 +23,8 @@ class BookController extends Controller
         return view('anggota.dashboard', compact('books', 'search'));
     }
 
+    // ADMIN CRUD
 
-    // ==========================
-    // 📚 ADMIN CRUD
-    // ==========================
     public function index(Request $request)
     {
         $query = Book::query();
@@ -49,10 +46,8 @@ class BookController extends Controller
         return view('books.create');
     }
 
-
-    // ==========================
-    // ✅ STORE + UPLOAD COVER
-    // ==========================
+    // STORE + UPLOAD COVER
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -65,7 +60,7 @@ class BookController extends Controller
             'cover'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        // ✅ Upload ke Laravel Cloud Object Storage (S3)
+        // Upload (S3)
         if ($request->hasFile('cover')) {
             $validated['cover'] = $request->file('cover')->store('covers', 'r2');
         }
@@ -76,19 +71,15 @@ class BookController extends Controller
             ->with('success', 'Buku berhasil ditambahkan');
     }
 
-
-    // ==========================
     // ✏️ EDIT
-    // ==========================
+
     public function edit(Book $book)
     {
         return view('books.edit', compact('book'));
     }
 
+    // UPDATE + GANTI COVER
 
-    // ==========================
-    // ✅ UPDATE + GANTI COVER
-    // ==========================
     public function update(Request $request, Book $book)
     {
         $validated = $request->validate([
@@ -121,10 +112,8 @@ class BookController extends Controller
             ->with('success', 'Buku berhasil diupdate');
     }
 
-
-    // ==========================
-    // 🗑️ DELETE + HAPUS COVER
-    // ==========================
+    // DELETE + HAPUS COVER
+    
     public function destroy(Book $book)
     {
         // ✅ Hapus cover dari S3
@@ -138,10 +127,8 @@ class BookController extends Controller
             ->with('success', 'Buku berhasil dihapus');
     }
 
+    // DETAIL BUKU
 
-    // ==========================
-    // 📖 DETAIL BUKU
-    // ==========================
     public function show(Book $book)
     {
         if (auth()->user()->role === 'anggota') {
@@ -152,9 +139,8 @@ class BookController extends Controller
     }
 
 
-    // ==========================
-    // 📊 ADMIN DASHBOARD
-    // ==========================
+    // ADMIN DASHBOARD
+    
     public function adminDashboard()
     {
         $totalBuku     = Book::count();
@@ -170,10 +156,8 @@ class BookController extends Controller
         ));
     }
 
+    // KATALOG ANGGOTA
 
-    // ==========================
-    // 📚 KATALOG ANGGOTA
-    // ==========================
     public function anggota(Request $request)
     {
         $query = Book::query();

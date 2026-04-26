@@ -61,27 +61,28 @@
 
                         {{-- STATUS (UPDATED) --}}
                          <td>
-                            @if($item->status == 'menunggu')
-                                <span class="badge bg-warning text-dark">
-                                    Menunggu Persetujuan
-                                </span>
-
-                            @elseif($item->status == 'dipinjam')
-                                <span class="badge bg-primary">
-                                    Dipinjam
-                                </span>
-
-                            @elseif($item->status == 'dikembalikan')
-                                <span class="badge bg-success">
-                                    Dikembalikan
-                                </span>
-
-                            @else
-                                <span class="badge bg-secondary">
-                                    -
-                                </span>
-                            @endif
-                        </td>
+    @if($item->status == 'menunggu')
+        <span class="badge bg-warning text-dark">
+            Menunggu Persetujuan
+        </span>
+    @elseif($item->status == 'approved')
+        <span class="badge bg-info text-dark">
+            Disetujui
+        </span>
+    @elseif($item->status == 'dipinjam')
+        <span class="badge bg-primary">
+            Dipinjam
+        </span>
+    @elseif($item->status == 'dikembalikan')
+        <span class="badge bg-success">
+            Dikembalikan
+        </span>
+    @else
+        <span class="badge bg-secondary">
+            -
+        </span>
+    @endif
+</td>
                         <td>
 
                         {{-- TOKEN --}}

@@ -80,7 +80,6 @@ class BookController extends Controller
     // EDIT
   public function update(Request $request, Book $book)
 {
-    Log::info('Update called', ['has_cover' => $request->hasFile('cover')]);
     $validated = $request->validate([
         'judul'     => 'required',
         'penulis'   => 'required',

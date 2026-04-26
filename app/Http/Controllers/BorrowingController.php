@@ -91,8 +91,9 @@ class BorrowingController extends Controller
     $lateDays = $today->greaterThan($dueDate) ? $dueDate->diffInDays($today) : 0;
     $denda    = $lateDays > 0 ? $lateDays * 1000 : 0;
 
-    $borrowing->book->increment('stok');
-
+   $book = Book::findOrFail($borrowing->book_id);
+   $book->increment('stok');
+    
     $borrowing->update([
         'status'               => 'dikembalikan',
         'denda'                => $denda,

@@ -53,7 +53,7 @@
 <tr>
     <td>
         @if($user->photo)
-            <img src="{{ asset( 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/profiles/' . auth()->user()->photo  }}" 
+            <img src="{{ 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/profiles/' . $user->photo  }}" 
                  width="50" height="50"
                  style="object-fit:cover; border-radius:50%;">
         @else

@@ -117,9 +117,7 @@
                        {{-- AKSI --}}
 <td>
     @if($item->status == 'approved')
-        <span class="badge bg-info text-dark">
-            <i class="bi bi-bag-check me-1"></i>Dapat Diambil
-        </span>
+         <span class="text-muted">Dapat Diambil</span>
     @elseif($item->status == 'dipinjam')
         <form action="{{ route('anggota.kembalikan', $item->id) }}" method="POST">
             @csrf

@@ -1,3 +1,4 @@
+@use('Illuminate\Support\Facades\Storage')
 @extends('layouts.app')
 @section('page-title', 'Kelola Buku')
 
@@ -77,9 +78,11 @@
                 @endif
             </div>
 
-            {{-- Cover Image --}}
-            <div style="position: relative; width: 100%; padding-top: 115%;"> {{-- Aspect ratio diperpendek --}}
-                <img src="{{ $book->cover ? asset('storage/' . $book->cover) : 'https://ui-avatars.com/api/?name='.urlencode(substr($book->judul,0,2)).'&background=random&color=fff&size=300' }}" 
+            {{-- ✅ Cover Image dari R2 --}}
+            <div style="position: relative; width: 100%; padding-top: 115%;">
+                <img src="{{ $book->cover 
+                        ? Storage::disk('r2')->url($book->cover) 
+                        : 'https://ui-avatars.com/api/?name='.urlencode(substr($book->judul,0,2)).'&background=random&color=fff&size=300' }}" 
                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
             </div>
             

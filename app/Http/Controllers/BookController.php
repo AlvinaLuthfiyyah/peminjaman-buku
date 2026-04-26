@@ -29,22 +29,20 @@ class BookController extends Controller
     // 📚 ADMIN CRUD
     // ==========================
     public function index(Request $request)
-{
-    $query = Book::query();
+    {
+        $query = Book::query();
 
-    // SEARCH
-    if ($request->search) {
-        $query->where(function ($q) use ($request) {
-            $q->where('judul', 'like', '%' . $request->search . '%')
-              ->orWhere('penulis', 'like', '%' . $request->search . '%');
-        });
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->search . '%')
+                  ->orWhere('penulis', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $books = $query->latest()->paginate(10)->withQueryString();
+
+        return view('books.index', compact('books'));
     }
-
-    // PAGINATION + KEEP SEARCH PARAM
-    $books = $query->latest()->paginate(10)->withQueryString();
-
-    return view('books.index', compact('books'));
-}
 
     public function create()
     {
@@ -58,17 +56,18 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul' => 'required',
-            'penulis' => 'required',
-            'genre' => 'required',
+            'judul'    => 'required',
+            'penulis'  => 'required',
+            'genre'    => 'required',
             'penerbit' => 'nullable',
-            'deskripsi' => 'nullable',
-            'stok' => 'required|integer',
-            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'deskripsi'=> 'nullable',
+            'stok'     => 'required|integer',
+            'cover'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
+        // ✅ Upload ke Cloudflare R2
         if ($request->hasFile('cover')) {
-            $validated['cover'] = $request->file('cover')->store('covers', 'public');
+            $validated['cover'] = $request->file('cover')->store('covers', 'r2');
         }
 
         Book::create($validated);
@@ -81,7 +80,7 @@ class BookController extends Controller
     // ==========================
     // ✏️ EDIT
     // ==========================
-    public function edit(Book $book) // ✅ pakai binding
+    public function edit(Book $book)
     {
         return view('books.edit', compact('book'));
     }
@@ -90,27 +89,27 @@ class BookController extends Controller
     // ==========================
     // ✅ UPDATE + GANTI COVER
     // ==========================
-    public function update(Request $request, Book $book) // ✅ binding
+    public function update(Request $request, Book $book)
     {
         $validated = $request->validate([
-            'judul' => 'required',
-            'penulis' => 'required',
-            'genre' => 'required',
+            'judul'    => 'required',
+            'penulis'  => 'required',
+            'genre'    => 'required',
             'penerbit' => 'nullable',
-            'deskripsi' => 'nullable',
-            'stok' => 'required|integer',
-            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'deskripsi'=> 'nullable',
+            'stok'     => 'required|integer',
+            'cover'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
         if ($request->hasFile('cover')) {
 
-            // hapus lama
-            if ($book->cover && Storage::disk('public')->exists($book->cover)) {
-                Storage::disk('public')->delete($book->cover);
+            // ✅ Hapus cover lama dari R2
+            if ($book->cover && Storage::disk('r2')->exists($book->cover)) {
+                Storage::disk('r2')->delete($book->cover);
             }
 
-            // simpan baru
-            $validated['cover'] = $request->file('cover')->store('covers', 'public');
+            // ✅ Simpan cover baru ke R2
+            $validated['cover'] = $request->file('cover')->store('covers', 'r2');
 
         } else {
             unset($validated['cover']);
@@ -122,12 +121,15 @@ class BookController extends Controller
             ->with('success', 'Buku berhasil diupdate');
     }
 
-    // DELETE + HAPUS COVER
 
-    public function destroy(Book $book) // ✅ binding
+    // ==========================
+    // 🗑️ DELETE + HAPUS COVER
+    // ==========================
+    public function destroy(Book $book)
     {
-        if ($book->cover && Storage::disk('public')->exists($book->cover)) {
-            Storage::disk('public')->delete($book->cover);
+        // ✅ Hapus cover dari R2
+        if ($book->cover && Storage::disk('r2')->exists($book->cover)) {
+            Storage::disk('r2')->delete($book->cover);
         }
 
         $book->delete();
@@ -137,48 +139,52 @@ class BookController extends Controller
     }
 
 
-    // DETAIL BUKU (SISWA)
+    // ==========================
+    // 📖 DETAIL BUKU
+    // ==========================
+    public function show(Book $book)
+    {
+        if (auth()->user()->role === 'anggota') {
+            return view('anggota.detail', compact('book'));
+        }
 
-   public function show(Book $book)
-{
-    if (auth()->user()->role === 'anggota') {
-        return view('anggota.detail', compact('book'));
+        return view('books.show', compact('book'));
     }
 
-    return view('books.show', compact('book'));
-}
 
-public function adminDashboard()
-{
-    $totalBuku = Book::count();
+    // ==========================
+    // 📊 ADMIN DASHBOARD
+    // ==========================
+    public function adminDashboard()
+    {
+        $totalBuku     = Book::count();
+        $totalDipinjam = Borrowing::where('status', 'dipinjam')->count();
+        $totalSelesai  = Borrowing::where('status', 'dikembalikan')->count();
+        $recentBooks   = Book::latest()->take(5)->get();
 
-    $totalDipinjam = Borrowing::where('status', 'dipinjam')->count();
-
-    $totalSelesai = Borrowing::where('status', 'dikembalikan')->count();
-
-    $recentBooks = Book::latest()->take(5)->get();
-
-    return view('admin.dashboard', compact(
-        'totalBuku',
-        'totalDipinjam',
-        'totalSelesai',
-        'recentBooks'
-    ));
-}
-
-public function anggota(Request $request)
-{
-    $query = Book::query();
-
-    // fitur search (opsional kalau sudah ada di UI)
-    if ($request->search) {
-        $query->where('judul', 'like', '%' . $request->search . '%')
-              ->orWhere('penulis', 'like', '%' . $request->search . '%');
+        return view('admin.dashboard', compact(
+            'totalBuku',
+            'totalDipinjam',
+            'totalSelesai',
+            'recentBooks'
+        ));
     }
 
-    $books = $query->latest()->paginate(10);
 
-    return view('anggota.katalog', compact('books'));
-}
+    // ==========================
+    // 📚 KATALOG ANGGOTA
+    // ==========================
+    public function anggota(Request $request)
+    {
+        $query = Book::query();
 
+        if ($request->search) {
+            $query->where('judul', 'like', '%' . $request->search . '%')
+                  ->orWhere('penulis', 'like', '%' . $request->search . '%');
+        }
+
+        $books = $query->latest()->paginate(10);
+
+        return view('anggota.katalog', compact('books'));
+    }
 }

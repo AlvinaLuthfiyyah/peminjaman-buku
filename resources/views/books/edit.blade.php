@@ -1,3 +1,4 @@
+@use('Illuminate\Support\Facades\Storage')
 @extends('layouts.app')
 @section('page-title', 'Edit Buku')
 
@@ -87,33 +88,33 @@
                     </div>
 
                     {{-- ROW: Penerbit & Genre --}}
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <label class="form-label">
-            <i class="bi bi-building me-1" style="color:#2563eb;"></i>
-            Penerbit
-        </label>
-        <input type="text" name="penerbit"
-               class="form-control @error('penerbit') is-invalid @enderror"
-               value="{{ old('penerbit', $book->penerbit) }}">
-        @error('penerbit')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-building me-1" style="color:#2563eb;"></i>
+                                Penerbit
+                            </label>
+                            <input type="text" name="penerbit"
+                                   class="form-control @error('penerbit') is-invalid @enderror"
+                                   value="{{ old('penerbit', $book->penerbit) }}">
+                            @error('penerbit')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-    <div class="col-md-6 mb-4">
-        <label class="form-label">
-            <i class="bi bi-tags me-1" style="color:#2563eb;"></i>
-            Genre
-        </label>
-        <input type="text" name="genre"
-               class="form-control @error('genre') is-invalid @enderror"
-               value="{{ old('genre', $book->genre) }}">
-        @error('genre')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-tags me-1" style="color:#2563eb;"></i>
+                                Genre
+                            </label>
+                            <input type="text" name="genre"
+                                   class="form-control @error('genre') is-invalid @enderror"
+                                   value="{{ old('genre', $book->genre) }}">
+                            @error('genre')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
 
                     {{-- DESKRIPSI --}}
                     <div class="mb-4">
@@ -126,7 +127,7 @@
                     </div>
 
                     <div class="row">
-                        {{-- COVER SAAT INI --}}
+                        {{-- ✅ COVER SAAT INI dari R2 --}}
                         @if($book->cover)
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">
@@ -134,7 +135,7 @@
                                     Cover Saat Ini
                                 </label>
                                 <div>
-                                    <img src="{{ asset('storage/' . $book->cover) }}"
+                                    <img src="{{ Storage::disk('r2')->url($book->cover) }}"
                                          style="max-width:140px; max-height:200px; object-fit:cover; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
                                 </div>
                             </div>

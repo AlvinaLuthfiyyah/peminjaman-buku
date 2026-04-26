@@ -178,7 +178,7 @@
             <div class="profile-avatar-wrapper">
                 <img id="side-avatar"
                     src="{{ auth()->user()->photo 
-                        ? asset('storage/' . auth()->user()->photo) 
+                        ? 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/profiles/' . auth()->user()->photo 
                         : 'https://ui-avatars.com/api/?name=' . auth()->user()->name . '&background=random' }}"
                     class="profile-avatar">
             </div>
@@ -282,7 +282,7 @@
                     <div class="d-flex align-items-center gap-3">
                         <img id="preview"
                             src="{{ auth()->user()->photo 
-                                ? asset('storage/' . auth()->user()->photo) 
+                                ? 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/profiles/' . auth()->user()->photo 
                                 : 'https://ui-avatars.com/api/?name=' . auth()->user()->name . '&background=random' }}"
                             width="60"
                             height="60"

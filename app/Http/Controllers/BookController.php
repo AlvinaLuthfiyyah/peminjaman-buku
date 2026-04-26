@@ -68,7 +68,7 @@ class BookController extends Controller
 
         // Upload (S3)
         if ($request->hasFile('cover')) {
-            $validated['cover'] = $request->file('cover')->store('covers', 's3');
+            $validated['cover'] = $request->file('cover')->store('', 's3');
         }
 
         Book::create($validated);
@@ -94,7 +94,7 @@ class BookController extends Controller
             if ($book->cover) {
                 try { Storage::disk('s3')->delete($book->cover); } catch (\Exception $e) {}
             }
-            $validated['cover'] = $request->file('cover')->store('covers', 's3');
+            $validated['cover'] = $request->file('cover')->store('', 's3');
         } else {
             unset($validated['cover']);
         }

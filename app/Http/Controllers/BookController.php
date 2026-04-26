@@ -90,11 +90,11 @@ class BookController extends Controller
         'cover'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
     ]);
 
-   if ($request->hasFile('cover')) {
+  if ($request->hasFile('cover')) {
+    if ($book->cover) {
+        try { Storage::disk('s3')->delete($book->cover); } catch (\Exception $e) {}
+    }
     $validated['cover'] = $request->file('cover')->store('covers', 's3');
-} else {
-    unset($validated['cover']);
-}
 
     $book->update($validated);
 

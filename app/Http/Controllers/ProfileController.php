@@ -29,7 +29,7 @@ class ProfileController extends Controller
 {
     $user = $request->user();
 
-    // 🔒 Validasi
+    // Validasi
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255',
@@ -39,23 +39,23 @@ class ProfileController extends Controller
         'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);
 
-    // ✏️ Update data
+    // Update data
     $user->name = $request->name;
     $user->email = $request->email;
     $user->no_hp = $request->no_hp;
     $user->alamat = $request->alamat;
 
-    // 🔄 Reset verifikasi kalau email berubah
+    // Reset verifikasi kalau email berubah
     if ($user->isDirty('email')) {
         $user->email_verified_at = null;
     }
 
-    // 🔐 Update password (opsional)
+    // Update password (opsional)
     if ($request->password) {
         $user->password = Hash::make($request->password);
     }
 
-    // 📸 Upload foto
+    // Upload foto
     if ($request->hasFile('photo')) {
 
         // hapus foto lama

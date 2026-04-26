@@ -92,9 +92,9 @@ class BookController extends Controller
 
     if ($request->hasFile('cover')) {
         if ($book->cover && Storage::disk('s3')->exists($book->cover)) {
-            Storage::disk('public')->delete($book->cover);
+            Storage::disk('s3')->delete($book->cover);
         }
-        $validated['cover'] = $request->file('cover')->store('covers', 'public');
+        $validated['cover'] = $request->file('cover')->store('covers', 's3');
     } else {
         unset($validated['cover']);
     }

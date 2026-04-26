@@ -135,7 +135,7 @@
                                     Cover Saat Ini
                                 </label>
                                 <div>
-                                   <img src="{{ asset('storage/' . $book->cover) }}"
+                                   <<img src="{{ Storage::disk('s3')->url($book->cover) }}"
                                          style="max-width:140px; max-height:200px; object-fit:cover; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
                                 </div>
                             </div>

@@ -46,6 +46,11 @@ class BookController extends Controller
         return view('books.create');
     }
 
+    public function edit(Book $book)
+{
+    return view('books.edit', compact('book'));
+}
+
     // STORE + UPLOAD COVER
     
     public function store(Request $request)
@@ -106,7 +111,7 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         // ✅ Hapus cover dari S3
-        if ($book->cover && Storage::disk('s3')->exists($book->cover)) {
+        if ($book->cover && Storage::disk('public')->exists($book->cover)) {
             Storage::disk('s3')->delete($book->cover);
         }
 

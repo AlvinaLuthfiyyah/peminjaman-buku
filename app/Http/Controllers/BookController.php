@@ -77,7 +77,6 @@ class BookController extends Controller
     }
 
     // EDIT
-\Log::info('Update called', ['has_cover' => $request->hasFile('cover')]);
   public function update(Request $request, Book $book)
 {
     \Log::info('Update called', ['has_cover' => $request->hasFile('cover')]);

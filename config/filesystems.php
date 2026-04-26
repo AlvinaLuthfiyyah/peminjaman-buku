@@ -44,6 +44,7 @@ return [
             'region' => env('AWS_DEFAULT_REGION', 'auto'),
             'bucket' => env('AWS_BUCKET'),
             'endpoint'=> env('AWS_ENDPOINT'),
+            'url'    => env('CLOUDFLARE_R2_URL'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
             'visibility' => 'public',
             'throw' => false,

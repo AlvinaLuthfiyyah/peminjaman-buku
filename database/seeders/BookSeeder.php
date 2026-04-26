@@ -13,17 +13,17 @@ class BookSeeder extends Seeder
             [
                 'judul' => 'Laskar Pelangi',
                 'penulis' => 'Andrea Hirata',
-                'tahun' => 2005
+                'stok' => 20
             ],
             [
                 'judul' => 'Bumi Manusia',
                 'penulis' => 'Pramoedya Ananta Toer',
-                'tahun' => 1980
+                'stok' => 10
             ],
             [
                 'judul' => 'Negeri 5 Menara',
                 'penulis' => 'Ahmad Fuadi',
-                'tahun' => 2009
+                'stok' => 6
             ]
         ]);
     }

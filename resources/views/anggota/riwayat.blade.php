@@ -60,27 +60,28 @@
                         </td>
 
                         {{-- STATUS (UPDATED) --}}
-                        <td>
-    @if($item->status == 'approved')
-        <span class="badge bg-info text-dark">
-            <i class="bi bi-bag-check me-1"></i>Dapat Diambil
-        </span>
+                         <td>
+                            @if($item->status == 'menunggu')
+                                <span class="badge bg-warning text-dark">
+                                    Menunggu Persetujuan
+                                </span>
 
-    @elseif($item->status == 'dipinjam')
-        <form action="{{ route('anggota.kembalikan', $item->id) }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-success">
-                Kembalikan
-            </button>
-        </form>
+                            @elseif($item->status == 'dipinjam')
+                                <span class="badge bg-primary">
+                                    Dipinjam
+                                </span>
 
-    @elseif($item->status == 'menunggu')
-        <span class="text-muted">Menunggu approval</span>
+                            @elseif($item->status == 'dikembalikan')
+                                <span class="badge bg-success">
+                                    Dikembalikan
+                                </span>
 
-    @else
-        <span class="text-muted">Selesai</span>
-    @endif
-</td>
+                            @else
+                                <span class="badge bg-secondary">
+                                    -
+                                </span>
+                            @endif
+                        </td>
                         <td>
 
                         {{-- TOKEN --}}

@@ -98,7 +98,7 @@
                         {{-- TOKEN --}}
 <td style="min-width:160px;">
 
-    @if($item->token && !$item->token_used)
+     @if($item->status == 'approved' && $item->token && !$item->token_used)
 
         <div style="font-weight:700; color:#2563eb;">
             {{ $item->token }}

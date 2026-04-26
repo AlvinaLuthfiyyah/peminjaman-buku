@@ -36,42 +36,41 @@ class BorrowingController extends Controller
     // PINJAM BUKU
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'book_id' => 'required|exists:books,id',
-            'durasi'  => 'required|integer|min:1|max:30'
-        ]);
+{
+    $request->validate([
+        'book_id' => 'required|exists:books,id',
+        'durasi'  => 'required|integer|min:1|max:30'
+    ]);
 
-        $durasi = (int) $request->durasi;
-        $book   = Book::findOrFail($request->book_id);
+    $durasi = (int) $request->durasi;
+    $book   = Book::findOrFail($request->book_id);
 
-        if ($book->stok <= 0) {
-            return back()->with('error', 'Stok buku habis');
-        }
-
-        $token   = 'TRX-' . strtoupper(Str::random(8));
-        $now     = now();
-        $expired = $now->copy()->addDay(); // [FIX] Dipakai di token_expired_at
-
-        Borrowing::create([
-            'user_id'          => Auth::id(),
-            'book_id'          => $request->book_id,
-            'tanggal_pinjam'   => $now,
-            'tanggal_kembali'  => $now->copy()->addDays($durasi),
-            'durasi'           => $durasi,
-            'status'           => 'menunggu',
-            'denda'            => 0,
-            'token'            => $token,
-            'token_expired_at' => $expired, // [FIX] Bukan null lagi
-            'token_used'       => false,
-        ]);
-
-        // Kurangi stok setelah peminjaman dibuat
-        $book->decrement('stok');
-
-        return redirect()->route('riwayat')
-            ->with('success', 'Pengajuan peminjaman berhasil, menunggu approval admin');
+    if ($book->stok <= 0) {
+        return back()->with('error', 'Stok buku habis');
     }
+
+    $token   = 'TRX-' . strtoupper(Str::random(8));
+    $now     = now();
+    $expired = $now->copy()->addDay();
+
+    Borrowing::create([
+        'user_id'          => Auth::id(),
+        'book_id'          => $request->book_id,
+        'tanggal_pinjam'   => $now,
+        'tanggal_kembali'  => $now->copy()->addDays($durasi),
+        'durasi'           => $durasi,
+        'status'           => 'menunggu',
+        'denda'            => 0,
+        'token'            => $token,
+        'token_expired_at' => $expired,
+        'token_used'       => false,
+    ]);
+
+    // [FIX] Hapus decrement stok di sini
+
+    return redirect()->route('riwayat')
+        ->with('success', 'Pengajuan peminjaman berhasil, menunggu approval admin');
+}
 
     // KEMBALIKAN BUKU
 
@@ -106,28 +105,30 @@ class BorrowingController extends Controller
     // APPROVE PEMINJAMAN
 
     public function approve($id)
-    {
-        // APPROVE ADMIN
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Akses tidak diizinkan');
-        }
-
-        $borrowing = Borrowing::findOrFail($id);
-        $book      = $borrowing->book;
-
-        if ($book->stok <= 0) {
-            return back()->with('error', 'Stok habis!');
-        }
-
-        $token = 'TRX-' . strtoupper(Str::random(8));
-
-        $borrowing->update([
-            'status'           => 'approved',
-            'token'            => $token,
-            'token_expired_at' => now()->addDay(),
-            'token_used'       => false,
-        ]);
-
-        return back()->with('success', 'Disetujui + token dibuat');
+{
+    if (Auth::user()->role !== 'admin') {
+        abort(403, 'Akses tidak diizinkan');
     }
+
+    $borrowing = Borrowing::findOrFail($id);
+    $book      = $borrowing->book;
+
+    if ($book->stok <= 0) {
+        return back()->with('error', 'Stok habis!');
+    }
+
+    $token = 'TRX-' . strtoupper(Str::random(8));
+
+    $borrowing->update([
+        'status'           => 'approved',
+        'token'            => $token,
+        'token_expired_at' => now()->addDay(),
+        'token_used'       => false,
+    ]);
+
+    // [FIX] Kurangi stok saat approve
+    $book->decrement('stok');
+
+    return back()->with('success', 'Disetujui + token dibuat');
+}
 }

@@ -78,10 +78,10 @@
                 @endif
             </div>
 
-            {{-- ✅ Cover Image dari R2 --}}
+            {{-- Cover Image --}}
             <div style="position: relative; width: 100%; padding-top: 115%;">
-                <img src="{{ $book->cover 
-                        ? Storage::disk('r2')->url($book->cover) 
+                  <img src="{{ $book->cover 
+                        ? Storage::url($book->cover)  
                         : 'https://ui-avatars.com/api/?name='.urlencode(substr($book->judul,0,2)).'&background=random&color=fff&size=300' }}" 
                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
             </div>

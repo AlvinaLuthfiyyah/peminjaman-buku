@@ -81,7 +81,7 @@
             {{-- Cover Image --}}
             <div style="position: relative; width: 100%; padding-top: 115%;">
     @if($book->cover)
-        <img src="{{ Storage::disk('s3')->url($book->cover) }}"
+        <img src="{{ 'https://dyyhqwqejfvmsoywvzeu.supabase.co/storage/v1/object/public/covers/' . $book->cover }}"
              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
     @else
         <img src="{{ 'https://ui-avatars.com/api/?name='.urlencode(substr($book->judul,0,2)).'&background=random&color=fff&size=300' }}"

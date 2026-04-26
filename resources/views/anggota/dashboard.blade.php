@@ -77,7 +77,7 @@
                     {{-- COVER --}}
                     <div style="width:80px; height:110px; flex-shrink:0;">
                         @if($book->cover)
-                            <img src="{{ asset('storage/'.$book->cover) }}"
+                             <img src="{{ Storage::url($book->cover) }}"
                                  style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
                         @else
                             <div style="width:100%; height:100%; background:#eee; border-radius:8px;"></div>

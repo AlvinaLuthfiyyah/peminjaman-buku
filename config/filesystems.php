@@ -34,8 +34,19 @@ return [
     'use_path_style_endpoint' => true,
     'throw'  => false,
 ],
-
-        // ✅ TAMBAHAN: Cloudflare R2
+    
+    'supabase-avatars' => [
+    'driver'   => 's3',
+    'key'      => env('AWS_ACCESS_KEY_ID'),
+    'secret'   => env('AWS_SECRET_ACCESS_KEY'),
+    'region'   => env('AWS_DEFAULT_REGION'),
+    'bucket'   => 'profiles',
+    'endpoint' => env('AWS_ENDPOINT'),
+    'use_path_style_endpoint' => true,
+    'visibility' => 'public',
+    'throw'    => false,
+],
+    
         'r2' => [
             'driver' => 's3',
             'key'    => env('AWS_ACCESS_KEY_ID'),

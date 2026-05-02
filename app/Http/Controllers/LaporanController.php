@@ -63,19 +63,14 @@ class LaporanController extends Controller
     }
 
     elseif ($tipe == 'mingguan') {
-
-        $start = Carbon::create($tahun, $bulan, 1)
-            ->addWeeks($minggu - 1)
-            ->startOfWeek();
-
-        $end = (clone $start)->endOfWeek();
-
-        $query->whereBetween('tanggal_pinjam', [$start, $end]);
-
-        $periode = $start->translatedFormat('d F Y') . ' - ' .
-                   $end->translatedFormat('d F Y');
-    }
-
+    
+    $startOfMonth = Carbon::create($tahun, $bulan, 1)->startOfDay();
+    $startDate    = $startOfMonth->copy()->addWeeks($minggu - 1);
+    $endDate      = $startDate->copy()->addDays(6)->endOfDay();
+    $query->whereBetween('tanggal_pinjam', [$startDate, $endDate]);
+    $periode = $startDate->translatedFormat('d F Y') . ' - ' .
+               $endDate->translatedFormat('d F Y');
+}
     $data = $query->get();
 
     // SUMMARY 

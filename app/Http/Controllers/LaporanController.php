@@ -13,58 +13,36 @@ class LaporanController extends Controller
 {
     public function index(Request $request)
 {
-    $tipe = $request->tipe ?? 'bulanan';
+    $tipe  = $request->tipe  ?? 'bulanan';
     $bulan = $request->bulan ?? now()->month;
     $tahun = $request->tahun ?? now()->year;
     $minggu = $request->minggu ?? 1;
 
     $query = Borrowing::with(['user', 'book']);
 
-    // BULANAN
     if ($tipe == 'bulanan') {
-
         $query->whereMonth('tanggal_pinjam', $bulan)
               ->whereYear('tanggal_pinjam', $tahun);
-    }
-
-    // MINGGUAN
-    else if ($tipe == 'mingguan') {
-
-        $startOfMonth = Carbon::create($tahun, $bulan, 1);
-
-        $startDate = $startOfMonth->copy()
-            ->addWeeks($minggu - 1)
-            ->startOfWeek(Carbon::MONDAY);
-
-        $endDate = $startDate->copy()
-            ->endOfWeek(Carbon::SUNDAY);
+    } elseif ($tipe == 'mingguan') {
+ 
+        $startOfMonth = Carbon::create($tahun, $bulan, 1)->startOfDay();
+        $startDate    = $startOfMonth->copy()->addWeeks($minggu - 1);
+        $endDate      = $startDate->copy()->addDays(6)->endOfDay();
 
         $query->whereBetween('tanggal_pinjam', [$startDate, $endDate]);
     }
 
-    $data = $query->latest()->get();
-
+    $data            = $query->latest()->get();
     $totalPeminjaman = $data->count();
-    $totalDenda = $data->sum('denda');
-    $totalBuku = Book::count();
-    $totalAnggota = User::count();
+    $totalDenda      = $data->sum('denda');
+    $totalBuku       = Book::count();
+    $totalAnggota    = User::where('role', 'anggota')->count(); 
 
     return view('admin.laporan.index', compact(
-        'data',
-        'tipe',
-        'bulan',
-        'tahun',
-        'minggu',
-        'totalPeminjaman',
-        'totalDenda',
-        'totalBuku',
-        'totalAnggota'
+        'data', 'tipe', 'bulan', 'tahun', 'minggu',
+        'totalPeminjaman', 'totalDenda', 'totalBuku', 'totalAnggota'
     ));
-
-        $totalBuku = Book::count();
-        $totalAnggota = User::where('role', 'siswa')->count();
-    }
-
+}
     
     public function exportPdf(Request $request)
 {
